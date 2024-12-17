@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [articles, setArticles] = useState([]); // stato per gli articoli
+  const [title, setTitle] = useState(''); // stato per il titolo
+
+  // funzione per aggiungere un nuovo articolo
+  const addArticle = (e) => {
+    e.preventDefault();
+    if (title.trim() !== '') {
+      setArticles([...articles, { title }]);
+      setTitle('');
+    }
+  };
+
+  // funzione per "cancellare" un articolo usando map
+  const deleteArticle = (indexToDelete) => {
+    const updatedArticles = articles.map((article, index) =>
+      index === indexToDelete ? null : article
+    );
+    setArticles(updatedArticles);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      <h1>React Blog Form</h1>
+      {/* Form per aggiungere un articolo */}
+      <form onSubmit={addArticle}>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Inserisci il titolo dell'articolo"
+        />
+        <button type="submit">Aggiungi Articolo</button>
+      </form>
+
+      {/* Lista degli articoli */}
+      <ul>
+        {articles.map((article, index) =>
+          article ? ( // Se l'articolo non è null, lo visualizziamo
+            <li key={index}>
+              {article.title}
+              <button onClick={() => deleteArticle(index)}>🗑️</button>
+            </li>
+          ) : null
+        )}
+      </ul>
+    </div>
+  );
 }
 
-export default App
+export default App;
